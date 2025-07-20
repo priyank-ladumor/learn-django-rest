@@ -1,0 +1,49 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+.venv/
+env/
+venv/
+ENV/
+*.env
+*.env.*
+
+# Django/migrations
+**/migrations/
+*.sqlite3
+# db.sqlite3 
+
+# VS Code & IDEs
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Media / static generated files
+media/
+staticfiles/
+static/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Local settings
+settings_local.py
+.env
+.env.*
+
+# Coverage / test files
+htmlcov/
+coverage.xml
+*.cover
+*.py,cover
+
+# Node / frontend (if using with Django)
+node_modules/
+dist/
+build/
