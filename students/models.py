@@ -4,7 +4,7 @@ from django.db import models
 
 class Student(models.Model):
     name = models.CharField(max_length=50)
-    age = models.IntegerField()
+    age = models.IntegerField(default=18)
     role_number = models.IntegerField(unique=True)
     id = models.AutoField(primary_key=True)
 
