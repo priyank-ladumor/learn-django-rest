@@ -1,13 +1,16 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from students.models import Student
 from employee.models import Employee
-from .serializers import StudentSerializer, EmployeeSerializer
+from employee.serializers import EmployeeSerializer
+from students.serializers import StudentSerializer
 from rest_framework.response import Response
 from rest_framework import status 
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from django.http import Http404
+from rest_framework import mixins, generics, viewsets
+
 
 @api_view(['GET', 'POST'])
 def get_students(request):
@@ -62,35 +65,131 @@ def get_update_delete_student(request, id):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-class EmployeeList(APIView):
-    def get(self, request):
+# class EmployeeList(APIView):
+#     def get(self, request):
+#         employees = Employee.objects.all()
+#         serializer = EmployeeSerializer(employees, many=True)
+#         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+#     def post(self, request):
+#         serializer = EmployeeSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         else:
+#             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+     
+        
+# class EmployeeDetails(APIView):
+#     def get_object(self, pk):
+#         try:
+#             return Employee.objects.get(pk=pk)
+#         except Employee.DoesNotExist:
+#             raise Http404
+        
+#     def get(self, request, pk):
+#         employee = self.get_object(pk)
+#         serializer = EmployeeSerializer(employee)
+#         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+#     def put(self, request, pk):
+#         employee = self.get_object(pk)
+#         serializer = EmployeeSerializer(employee, data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_200_OK)
+#         else:
+#             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+#     def delete(self, request, pk):
+#         employee = self.get_object(pk)
+#         employee.delete()
+#         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+'''
+A Mixin is a reusable piece of code (a small class) that adds specific functionality to your view.
+you pick only the tools (methods like .list(), .create(), etc.) you need
+'''  
+# class EmployeeList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+#     queryset = Employee.objects.all() # default get
+#     serializer_class = EmployeeSerializer # default serializer 
+    
+#     def get(self, request): # args and kwargs for extra arguments 
+#         return self.list(request)
+    
+#     def post(self, request):
+#         return self.create(request)
+    
+
+# class EmployeeDetails(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
+#     queryset = Employee.objects.all()
+#     serializer_class = EmployeeSerializer
+    
+#     def get(self, request, pk):
+#         return self.retrieve(request, pk)
+    
+#     def put(self, request, pk):
+#         return self.update(request, pk)
+    
+#     def delete(self, request, pk):
+#         return self.destroy(request, pk)
+
+
+'''
+GenericAPIView is a special view that adds common features like:
+    Handling queryset and serializer.
+    Looking up objects by ID (pk).
+    Integration with mixins (mixins need this to work).
+    🔹 You combine GenericAPIView with mixins to create custom views.
+'''
+
+# class EmployeeList(generics.ListCreateAPIView):
+#     queryset = Employee.objects.all()
+#     serializer_class = EmployeeSerializer
+    
+# # class EmployeeDetails(generics.RetrieveAPIView, generics.UpdateAPIView, generics.DestroyAPIView):
+# class EmployeeDetails(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = Employee.objects.all()
+#     serializer_class = EmployeeSerializer
+#     lookup_field = 'pk'
+
+
+
+'''
+| Concept          | Description                                           | When to Use                   |
+| ---------------- | ----------------------------------------------------- | ----------------------------- |
+| **ViewSet**      | Group view logic (define your own list/retrieve/etc.) | When you need custom behavior |
+| **ModelViewSet** | Auto CRUD for a model (queryset + serializer)         | For quick full-featured APIs  |
+'''
+
+
+# class EmployeeViewSet(viewsets.ModelViewSet):
+#     queryset = Employee.objects.all()
+#     serializer_class = EmployeeSerializer
+    
+    
+class EmployeeViewSet(viewsets.ViewSet):
+    def list(self, request):
         employees = Employee.objects.all()
         serializer = EmployeeSerializer(employees, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-    def post(self, request):
+    def create(self, request):
         serializer = EmployeeSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-     
         
-class EmployeeDetails(APIView):
-    def get_object(self, pk):
-        try:
-            return Employee.objects.get(pk=pk)
-        except Employee.DoesNotExist:
-            raise Http404
-        
-    def get(self, request, pk):
-        employee = self.get_object(pk)
+    def retrieve(self, request, pk=None):
+        # employee = Employee.objects.get(pk=pk)
+        employee = get_object_or_404(Employee, pk=pk)
         serializer = EmployeeSerializer(employee)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-    def put(self, request, pk):
-        employee = self.get_object(pk)
+    def update(self, request, pk=None):
+        employee = get_object_or_404(Employee, pk=pk)
         serializer = EmployeeSerializer(employee, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -98,7 +197,7 @@ class EmployeeDetails(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
-    def delete(self, request, pk):
-        employee = self.get_object(pk)
+    def destroy(self, request, pk=None):
+        employee = get_object_or_404(Employee, pk=pk)
         employee.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
