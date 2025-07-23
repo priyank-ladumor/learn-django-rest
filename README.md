@@ -20,6 +20,9 @@ django-admin --version
 <!-- Run the development server -->
 python manage.py runserver
 
+<!-- Run the development server using specific port for all network  -->
+python manage.py runserver 0.0.0.0:9000
+
  <!-- Create a Django App -->
  <!-- Inside your project folder (where manage.py is) -->
 python manage.py startapp any_name_want
@@ -64,3 +67,4 @@ python manage.py migrate
 
 <!-- for create django-rest-framework  -->
 pip install djangorestframework
+
