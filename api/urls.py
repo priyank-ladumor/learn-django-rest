@@ -5,6 +5,8 @@ from . import views
 
 router = DefaultRouter()
 router.register('employee', views.EmployeeViewSet, basename='employee')
+router.register('blogs', views.BlogsViewSet, basename='blogs')
+router.register('comments', views.CommentViewSet, basename='comments')
 
 urlpatterns = [
     path('students/', view=views.get_students),

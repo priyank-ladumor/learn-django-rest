@@ -2,8 +2,10 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from students.models import Student
 from employee.models import Employee
+from blogs.models import Blogs, Comments
 from employee.serializers import EmployeeSerializer
 from students.serializers import StudentSerializer
+from blogs.serializers import BlogSerializer, CommentSerializer
 from rest_framework.response import Response
 from rest_framework import status 
 from rest_framework.decorators import api_view
@@ -201,3 +203,15 @@ class EmployeeViewSet(viewsets.ViewSet):
         employee = get_object_or_404(Employee, pk=pk)
         employee.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+    
+    
+class BlogsViewSet(viewsets.ModelViewSet):
+    queryset = Blogs.objects.all()
+    serializer_class = BlogSerializer
+    lookup_field = 'id'
+    
+class CommentViewSet(viewsets.ModelViewSet):
+    queryset = Comments.objects.all()
+    serializer_class = CommentSerializer
+    lookup_field = 'id'
