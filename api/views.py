@@ -12,7 +12,7 @@ from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from django.http import Http404
 from rest_framework import mixins, generics, viewsets
-
+from .paginations import customPagination
 
 @api_view(['GET', 'POST'])
 def get_students(request):
@@ -148,6 +148,7 @@ GenericAPIView is a special view that adds common features like:
 # class EmployeeList(generics.ListCreateAPIView):
 #     queryset = Employee.objects.all()
 #     serializer_class = EmployeeSerializer
+#     # pagination_class = customPagination
     
 # # class EmployeeDetails(generics.RetrieveAPIView, generics.UpdateAPIView, generics.DestroyAPIView):
 # class EmployeeDetails(generics.RetrieveUpdateDestroyAPIView):
@@ -172,9 +173,17 @@ GenericAPIView is a special view that adds common features like:
     
 class EmployeeViewSet(viewsets.ViewSet):
     def list(self, request):
-        employees = Employee.objects.all()
-        serializer = EmployeeSerializer(employees, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        pageNum = request.query_params.get('page')
+        queryset = Employee.objects.all()
+        paginator = customPagination()
+        page = paginator.paginate_queryset(queryset, request)
+
+        if pageNum is not None:
+            serializer = EmployeeSerializer(page, many=True)
+            return paginator.get_paginated_response(serializer.data)
+        else:
+            serializer = EmployeeSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
     
     def create(self, request):
         serializer = EmployeeSerializer(data=request.data)
@@ -209,9 +218,10 @@ class EmployeeViewSet(viewsets.ViewSet):
 class BlogsViewSet(viewsets.ModelViewSet):
     queryset = Blogs.objects.all()
     serializer_class = BlogSerializer
-    lookup_field = 'id'
+    pagination_class = customPagination
+    lookup_field = 'pk'
     
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comments.objects.all()
     serializer_class = CommentSerializer
-    lookup_field = 'id'
+    lookup_field = 'pk'

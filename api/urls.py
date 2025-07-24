@@ -4,8 +4,14 @@ from rest_framework.routers import DefaultRouter
 from . import views
 
 router = DefaultRouter()
-router.register('employee', views.EmployeeViewSet, basename='employee')
-router.register('blogs', views.BlogsViewSet, basename='blogs')
+'''
+r'employee' means the URL path will begin with /employee/ & 
+r (raw string) tells Python not to escape backslashes,
+which is helpful if you're using regex patterns.
+But in this case, 'users' and r'users' behave the same.
+'''
+router.register(r'employee', views.EmployeeViewSet, basename='employee')
+router.register('blogs', views.BlogsViewSet, basename='blogs') 
 router.register('comments', views.CommentViewSet, basename='comments')
 
 urlpatterns = [
