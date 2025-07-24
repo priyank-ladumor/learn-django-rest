@@ -13,6 +13,8 @@ from rest_framework.views import APIView
 from django.http import Http404
 from rest_framework import mixins, generics, viewsets
 from .paginations import customPagination
+from django_filters.rest_framework import DjangoFilterBackend
+
 
 @api_view(['GET', 'POST'])
 def get_students(request):
@@ -220,6 +222,8 @@ class BlogsViewSet(viewsets.ModelViewSet):
     serializer_class = BlogSerializer
     pagination_class = customPagination
     lookup_field = 'pk'
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['title', 'status']
     
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comments.objects.all()
