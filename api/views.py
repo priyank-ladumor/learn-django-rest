@@ -14,7 +14,7 @@ from django.http import Http404
 from rest_framework import mixins, generics, viewsets
 from .paginations import customPagination
 from django_filters.rest_framework import DjangoFilterBackend
-
+from .filters import EmployeeFilter, BlogFilter
 
 @api_view(['GET', 'POST'])
 def get_students(request):
@@ -175,17 +175,20 @@ GenericAPIView is a special view that adds common features like:
     
 class EmployeeViewSet(viewsets.ViewSet):
     def list(self, request):
-        pageNum = request.query_params.get('page')
         queryset = Employee.objects.all()
-        paginator = customPagination()
-        page = paginator.paginate_queryset(queryset, request)
 
-        if pageNum is not None:
+        # Apply filtering manually
+        filtered_queryset = EmployeeFilter(request.GET, queryset=queryset).qs
+
+        paginator = customPagination()
+        page = paginator.paginate_queryset(filtered_queryset, request)
+
+        if page is not None:
             serializer = EmployeeSerializer(page, many=True)
             return paginator.get_paginated_response(serializer.data)
-        else:
-            serializer = EmployeeSerializer(queryset, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        serializer = EmployeeSerializer(filtered_queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     
     def create(self, request):
         serializer = EmployeeSerializer(data=request.data)
@@ -222,8 +225,12 @@ class BlogsViewSet(viewsets.ModelViewSet):
     serializer_class = BlogSerializer
     pagination_class = customPagination
     lookup_field = 'pk'
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['title', 'status']
+    '''for default filter'''
+    # filter_backends = [DjangoFilterBackend]
+    # filterset_fields = ['title', 'status']
+    
+    '''for custom filter'''
+    filterset_class = BlogFilter
     
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comments.objects.all()
