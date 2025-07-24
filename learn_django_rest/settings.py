@@ -136,7 +136,8 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 2,
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'SEARCH_PARAM': 'q',
-    'ORDERING_PARAM': 'order_by'
+    'ORDERING_PARAM': 'order_by',
+    # 'URL_FIELD_NAME': 'url', # Disable trailing slashes
 }
 
 # STATIC_URL = 'static/'
