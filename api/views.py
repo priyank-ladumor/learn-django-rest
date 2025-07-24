@@ -15,6 +15,7 @@ from rest_framework import mixins, generics, viewsets
 from .paginations import customPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from .filters import EmployeeFilter, BlogFilter
+from rest_framework.filters import SearchFilter, OrderingFilter
 
 @api_view(['GET', 'POST'])
 def get_students(request):
@@ -171,24 +172,41 @@ GenericAPIView is a special view that adds common features like:
 # class EmployeeViewSet(viewsets.ModelViewSet):
 #     queryset = Employee.objects.all()
 #     serializer_class = EmployeeSerializer
+ 
+class EmployeeListAPIView(generics.ListAPIView):
+    queryset = Employee.objects.all()
+    serializer_class = EmployeeSerializer
+    pagination_class = customPagination
+
+    # Enable all filters here
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+
+    # DjangoFilterBackend: exact matches
+    filterset_class = EmployeeFilter
+
+    # SearchFilter: partial matching on these fields
+    search_fields = ['name', 'designation']
+
+    # OrderingFilter: fields you can sort on
+    ordering_fields = ['name', 'age', 'designation']   
     
     
-class EmployeeViewSet(viewsets.ViewSet):
-    def list(self, request):
-        queryset = Employee.objects.all()
+class EmployeeViewSet(viewsets.ViewSet, generics.ListAPIView):
+    # def list(self, request):
+    #     queryset = Employee.objects.all()
 
-        # Apply filtering manually
-        filtered_queryset = EmployeeFilter(request.GET, queryset=queryset).qs
+    #     # Apply filtering manually
+    #     filtered_queryset = EmployeeFilter(request.GET, queryset=queryset).qs
 
-        paginator = customPagination()
-        page = paginator.paginate_queryset(filtered_queryset, request)
+    #     paginator = customPagination()
+    #     page = paginator.paginate_queryset(filtered_queryset, request)
 
-        if page is not None:
-            serializer = EmployeeSerializer(page, many=True)
-            return paginator.get_paginated_response(serializer.data)
+    #     if page is not None:
+    #         serializer = EmployeeSerializer(page, many=True)
+    #         return paginator.get_paginated_response(serializer.data)
         
-        serializer = EmployeeSerializer(filtered_queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    #     serializer = EmployeeSerializer(filtered_queryset, many=True)
+    #     return Response(serializer.data, status=status.HTTP_200_OK)
     
     def create(self, request):
         serializer = EmployeeSerializer(data=request.data)
@@ -219,18 +237,21 @@ class EmployeeViewSet(viewsets.ViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
     
     
-    
+# dynamic filter, pagination, etc.. work on also generic view
 class BlogsViewSet(viewsets.ModelViewSet):
     queryset = Blogs.objects.all()
     serializer_class = BlogSerializer
     pagination_class = customPagination
     lookup_field = 'pk'
+    
     '''for default filter'''
-    # filter_backends = [DjangoFilterBackend]
-    # filterset_fields = ['title', 'status']
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['title', 'status']
+    search_fields = ['title', 'content']
+    ordering_fields = ['date', 'title']
     
     '''for custom filter'''
-    filterset_class = BlogFilter
+    # filterset_class = BlogFilter
     
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comments.objects.all()

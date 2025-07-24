@@ -17,6 +17,7 @@ router.register('comments', views.CommentViewSet, basename='comments')
 urlpatterns = [
     path('students/', view=views.get_students),
     path('students/<int:id>', view=views.get_update_delete_student),
+    path('employee/', view=views.EmployeeListAPIView.as_view()),
     
     # path('employee/', view=views.EmployeeList.as_view()),
     # path('employee/<int:pk>', view=views.EmployeeDetails.as_view()),
