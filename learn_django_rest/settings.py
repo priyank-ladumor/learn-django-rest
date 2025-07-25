@@ -139,6 +139,7 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'SEARCH_PARAM': 'q',
     'ORDERING_PARAM': 'order_by',
+    # 'URL_FIELD_NAME': 'url', # Disable trailing slashes
      'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )

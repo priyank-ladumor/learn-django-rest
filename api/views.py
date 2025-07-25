@@ -171,72 +171,85 @@ GenericAPIView is a special view that adds common features like:
 '''
 
 
-# class EmployeeViewSet(viewsets.ModelViewSet):
-#     queryset = Employee.objects.all()
-#     serializer_class = EmployeeSerializer
- 
-class EmployeeListAPIView(generics.ListAPIView):
+class EmployeeViewSet(viewsets.ModelViewSet):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
     pagination_class = customPagination
 
-    # Enable all filters here
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-
-    # DjangoFilterBackend: exact matches
     filterset_class = EmployeeFilter
-
-    # SearchFilter: partial matching on these fields
     search_fields = ['name', 'designation']
-
-    # OrderingFilter: fields you can sort on
-    ordering_fields = ['name', 'age', 'designation']   
+    ordering_fields = ['name', 'age', 'designation']
     
     
-class EmployeeViewSet(viewsets.ViewSet, generics.ListAPIView):
-    # def list(self, request):
-    #     queryset = Employee.objects.all()
+ 
+# class EmployeeListAPIView(generics.ListCreateAPIView):
+#     queryset = Employee.objects.all()
+#     serializer_class = EmployeeSerializer
+#     pagination_class = customPagination
 
-    #     # Apply filtering manually
-    #     filtered_queryset = EmployeeFilter(request.GET, queryset=queryset).qs
+#     # Enable all filters here
+#     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
 
-    #     paginator = customPagination()
-    #     page = paginator.paginate_queryset(filtered_queryset, request)
+#     # DjangoFilterBackend: exact matches
+#     filterset_class = EmployeeFilter
 
-    #     if page is not None:
-    #         serializer = EmployeeSerializer(page, many=True)
-    #         return paginator.get_paginated_response(serializer.data)
+#     # SearchFilter: partial matching on these fields
+#     search_fields = ['name', 'designation']
+
+#     # OrderingFilter: fields you can sort on
+#     ordering_fields = ['name', 'age', 'designation']   
+    
+# class EmployeeDetailsAPIView(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = Employee.objects.all()
+#     serializer_class = EmployeeSerializer
+#     lookup_field = 'pk'
+    
+    
+# class EmployeeViewSet(viewsets.ViewSet, generics.ListAPIView):
+#     def list(self, request):
+#         queryset = Employee.objects.all()
+
+#         # Apply filtering manually
+#         filtered_queryset = EmployeeFilter(request.GET, queryset=queryset).qs
+
+#         paginator = customPagination()
+#         page = paginator.paginate_queryset(filtered_queryset, request)
+
+#         if page is not None:
+#             serializer = EmployeeSerializer(page, many=True)
+#             return paginator.get_paginated_response(serializer.data)
         
-    #     serializer = EmployeeSerializer(filtered_queryset, many=True)
-    #     return Response(serializer.data, status=status.HTTP_200_OK)
+#         serializer = EmployeeSerializer(filtered_queryset, many=True)
+#         return Response(serializer.data, status=status.HTTP_200_OK)
     
-    def create(self, request):
-        serializer = EmployeeSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#     def create(self, request):
+#         serializer = EmployeeSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         else:
+#             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
-    def retrieve(self, request, pk=None):
-        # employee = Employee.objects.get(pk=pk)
-        employee = get_object_or_404(Employee, pk=pk)
-        serializer = EmployeeSerializer(employee)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+#     def retrieve(self, request, pk=None):
+#         # employee = Employee.objects.get(pk=pk)
+#         employee = get_object_or_404(Employee, pk=pk)
+#         serializer = EmployeeSerializer(employee)
+#         return Response(serializer.data, status=status.HTTP_200_OK)
     
-    def update(self, request, pk=None):
-        employee = get_object_or_404(Employee, pk=pk)
-        serializer = EmployeeSerializer(employee, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#     def update(self, request, pk=None):
+#         employee = get_object_or_404(Employee, pk=pk)
+#         serializer = EmployeeSerializer(employee, data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_200_OK)
+#         else:
+#             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
-    def destroy(self, request, pk=None):
-        employee = get_object_or_404(Employee, pk=pk)
-        employee.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+#     def destroy(self, request, pk=None):
+#         employee = get_object_or_404(Employee, pk=pk)
+#         employee.delete()
+#         return Response(status=status.HTTP_204_NO_CONTENT)
     
     
 # dynamic filter, pagination, etc.. work on also generic view
@@ -247,13 +260,16 @@ class BlogsViewSet(viewsets.ModelViewSet):
     lookup_field = 'pk'
     
     '''for default filter'''
-    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['title', 'status']
-    search_fields = ['title', 'content']
-    ordering_fields = ['date', 'title']
+    # filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    # filterset_fields = ['title', 'status']
+    # search_fields = ['title', 'content']
+    # ordering_fields = ['date', 'title']
     
     '''for custom filter'''
-    # filterset_class = BlogFilter
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_class = BlogFilter
+    search_fields = ['title', 'content']
+    ordering_fields = ['date', 'title']
     
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comments.objects.all()
