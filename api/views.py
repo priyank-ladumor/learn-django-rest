@@ -16,6 +16,8 @@ from .paginations import customPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from .filters import EmployeeFilter, BlogFilter
 from rest_framework.filters import SearchFilter, OrderingFilter
+from authapi.serializers import UserSerializer
+from django.contrib.auth.models import User
 
 @api_view(['GET', 'POST'])
 def get_students(request):
@@ -257,3 +259,10 @@ class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comments.objects.all()
     serializer_class = CommentSerializer
     lookup_field = 'pk'
+
+class UserViewSet(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    pagination_class = customPagination
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['username', 'email', 'is_staff', 'is_active']

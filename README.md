@@ -68,3 +68,7 @@ python manage.py migrate
 <!-- for create django-rest-framework  -->
 pip install djangorestframework
 
+<!-- for changing app name -->
+<!-- mv current_app_name update_app_name -->
+<!-- after change name on admin.py file and settings.py (INSTALLED_APPS) -->
+mv auth authapi

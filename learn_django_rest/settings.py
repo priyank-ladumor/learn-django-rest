@@ -44,7 +44,9 @@ INSTALLED_APPS = [
     'api',
     'employee',
     'blogs',
-    'django_filters'
+    'django_filters',
+    'rest_framework_simplejwt',
+    'authapi'
 ]
 
 MIDDLEWARE = [
@@ -136,7 +138,10 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 2,
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'SEARCH_PARAM': 'q',
-    'ORDERING_PARAM': 'order_by'
+    'ORDERING_PARAM': 'order_by',
+     'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
 }
 
 # STATIC_URL = 'static/'
