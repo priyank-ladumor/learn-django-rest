@@ -22,3 +22,9 @@ class RegisterSerializer(serializers.ModelSerializer): # ModelSerializer Use whe
 class LoginSerializer(serializers.Serializer): # Serializer Use when we don't need class meta
     username = serializers.CharField(required=True)
     password = serializers.CharField(required=True, write_only=True)
+    
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'first_name', 'last_name']
+        read_only_fields = ['id', 'username', 'email']  

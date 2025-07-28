@@ -22,6 +22,8 @@ urlpatterns = [
     
     path('users/', view=views.UserViewSet.as_view()),
     
+    path('profile/', view=views.UserProfileView.as_view()),
+    
     path('employee/', view=views.EmployeeListAPIView.as_view()),
     # path('employee/', view=views.EmployeeList.as_view()),
     # path('employee/<int:pk>', view=views.EmployeeDetails.as_view()),

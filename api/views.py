@@ -16,7 +16,7 @@ from .paginations import customPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from .filters import EmployeeFilter, BlogFilter
 from rest_framework.filters import SearchFilter, OrderingFilter
-from authapi.serializers import UserSerializer
+from authapi.serializers import UserSerializer, UserProfileSerializer
 from django.contrib.auth import get_user_model
 from rest_framework.permissions import IsAuthenticated
 from .renderers import CustomJSONRenderer
@@ -299,3 +299,23 @@ class UserViewSet(generics.ListAPIView):
         renderer_classes = [CustomJSONRenderer]
     else:
         renderer_classes = [CustomJSONRenderer, BrowsableAPIRenderer]
+        
+class UserProfileView(generics.GenericAPIView):
+    permission_classes = [IsAuthenticated]
+    
+    if os.getenv('DJANGO_ENV') == 'production':
+        renderer_classes = [CustomJSONRenderer]
+    else:
+        renderer_classes = [CustomJSONRenderer, BrowsableAPIRenderer]
+
+    def get(self, request):
+        serializer = UserProfileSerializer(request.user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def put(self, request):
+        serializer = UserProfileSerializer(request.user, data=request.data, partial=True) # partial=True for partial update
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+    

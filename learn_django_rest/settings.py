@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
 import os
 
 
@@ -173,6 +174,17 @@ CORS_ALLOW_METHODS = (
 )
 
 AUTH_USER_MODEL = 'authapi.CustomUser'
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=24),  # ⏰ 24-hour access token
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),   # optional: set refresh token to 7 days
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}
+
 
 # STATIC_URL = 'static/'
 
