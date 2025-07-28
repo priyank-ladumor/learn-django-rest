@@ -18,6 +18,7 @@ from .filters import EmployeeFilter, BlogFilter
 from rest_framework.filters import SearchFilter, OrderingFilter
 from authapi.serializers import UserSerializer
 from django.contrib.auth.models import User
+from rest_framework.permissions import IsAuthenticated
 
 @api_view(['GET', 'POST'])
 def get_students(request):
@@ -183,22 +184,22 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     
     
  
-# class EmployeeListAPIView(generics.ListCreateAPIView):
-#     queryset = Employee.objects.all()
-#     serializer_class = EmployeeSerializer
-#     pagination_class = customPagination
+class EmployeeListAPIView(generics.ListCreateAPIView):
+    queryset = Employee.objects.all()
+    serializer_class = EmployeeSerializer
+    pagination_class = customPagination
 
-#     # Enable all filters here
-#     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    # Enable all filters here
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
 
-#     # DjangoFilterBackend: exact matches
-#     filterset_class = EmployeeFilter
+    # DjangoFilterBackend: exact matches
+    filterset_class = EmployeeFilter
 
-#     # SearchFilter: partial matching on these fields
-#     search_fields = ['name', 'designation']
+    # SearchFilter: partial matching on these fields
+    search_fields = ['name', 'designation']
 
-#     # OrderingFilter: fields you can sort on
-#     ordering_fields = ['name', 'age', 'designation']   
+    # OrderingFilter: fields you can sort on
+    ordering_fields = ['name', 'age', 'designation']   
     
 # class EmployeeDetailsAPIView(generics.RetrieveUpdateDestroyAPIView):
 #     queryset = Employee.objects.all()
@@ -278,6 +279,7 @@ class CommentViewSet(viewsets.ModelViewSet):
 
 class UserViewSet(generics.ListAPIView):
     queryset = User.objects.all()
+    permission_classes = [IsAuthenticated]
     serializer_class = UserSerializer
     pagination_class = customPagination
     filter_backends = [DjangoFilterBackend]
