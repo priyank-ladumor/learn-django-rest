@@ -145,6 +145,8 @@ REST_FRAMEWORK = {
     ),
 }
 
+AUTH_USER_MODEL = 'authapi.CustomUser'
+
 # STATIC_URL = 'static/'
 
 # STATICFILES_DIRS = [

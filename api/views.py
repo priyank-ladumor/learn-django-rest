@@ -17,8 +17,10 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .filters import EmployeeFilter, BlogFilter
 from rest_framework.filters import SearchFilter, OrderingFilter
 from authapi.serializers import UserSerializer
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from rest_framework.permissions import IsAuthenticated
+
+User = get_user_model()
 
 @api_view(['GET', 'POST'])
 def get_students(request):
