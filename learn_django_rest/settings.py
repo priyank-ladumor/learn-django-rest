@@ -46,10 +46,12 @@ INSTALLED_APPS = [
     'blogs',
     'django_filters',
     'rest_framework_simplejwt',
-    'authapi'
+    'authapi',
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # should be at the top
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -144,6 +146,21 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",      # React/Next.js frontend (for example)
+    "http://127.0.0.1:3000",
+    "https://yourfrontend.com",
+]
+
+CORS_ALLOW_HEADERS = [
+    "content-type",
+    "authorization",
+    "x-csrftoken",
+    "x-requested-with",
+]
+
+# CORS_ALLOW_ALL_ORIGINS = True  # ❗Not recommended for production
 
 AUTH_USER_MODEL = 'authapi.CustomUser'
 
