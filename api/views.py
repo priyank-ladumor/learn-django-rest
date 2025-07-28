@@ -19,6 +19,9 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from authapi.serializers import UserSerializer
 from django.contrib.auth import get_user_model
 from rest_framework.permissions import IsAuthenticated
+from .renderers import CustomJSONRenderer
+from rest_framework.renderers import BrowsableAPIRenderer
+import os
 
 User = get_user_model()
 
@@ -262,6 +265,11 @@ class BlogsViewSet(viewsets.ModelViewSet):
     pagination_class = customPagination
     lookup_field = 'pk'
     
+    if os.getenv('DJANGO_ENV') == 'production':
+        renderer_classes = [CustomJSONRenderer]
+    else:
+        renderer_classes = [CustomJSONRenderer, BrowsableAPIRenderer]
+        
     '''for default filter'''
     # filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     # filterset_fields = ['title', 'status']
@@ -286,3 +294,8 @@ class UserViewSet(generics.ListAPIView):
     pagination_class = customPagination
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['username', 'email', 'is_staff', 'is_active']
+    
+    if os.getenv('DJANGO_ENV') == 'production':
+        renderer_classes = [CustomJSONRenderer]
+    else:
+        renderer_classes = [CustomJSONRenderer, BrowsableAPIRenderer]

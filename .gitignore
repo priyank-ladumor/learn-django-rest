@@ -9,7 +9,7 @@ env/
 venv/
 ENV/
 *.env
-*.env.*
+# *.env.*
 
 # Django/migrations
 **/migrations/
@@ -34,8 +34,6 @@ Thumbs.db
 
 # Local settings
 settings_local.py
-.env
-.env.*
 
 # Coverage / test files
 htmlcov/
