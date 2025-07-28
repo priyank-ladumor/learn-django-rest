@@ -150,17 +150,27 @@ REST_FRAMEWORK = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",      # React/Next.js frontend (for example)
     "http://127.0.0.1:3000",
-    "https://yourfrontend.com",
 ]
 
-CORS_ALLOW_HEADERS = [
-    "content-type",
-    "authorization",
-    "x-csrftoken",
-    "x-requested-with",
-]
+# CORS_ALLOW_HEADERS = (
+#     "accept",
+#     "authorization",
+#     "content-type",
+#     "user-agent",
+#     "x-csrftoken",
+#     "x-requested-with",
+# )
 
 # CORS_ALLOW_ALL_ORIGINS = True  # ❗Not recommended for production
+
+CORS_ALLOW_METHODS = (
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+)
 
 AUTH_USER_MODEL = 'authapi.CustomUser'
 
