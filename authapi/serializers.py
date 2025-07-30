@@ -31,13 +31,12 @@ class UserProfileSerializer(serializers.ModelSerializer):
         
         
 class ForgotPasswordSerializer(serializers.Serializer):
-    email = serializers.EmailField()
+    email = serializers.EmailField(required=True)
 
-class VerifyOTPSerializer(serializers.Serializer):
-    email = serializers.EmailField()
-    otp = serializers.CharField(max_length=6)
+class VerifyOTPAndChangePasswordSerializer(serializers.Serializer):
+    otp = serializers.CharField(max_length=6, required=True)
+    new_password = serializers.CharField(max_length=128, required=True)
 
-class ResetPasswordSerializer(serializers.Serializer):
-    email = serializers.EmailField()
-    otp = serializers.CharField(max_length=6)
-    new_password = serializers.CharField(write_only=True)
+class ChangePasswordViewSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+    new_password = serializers.CharField(max_length=128, required=True)

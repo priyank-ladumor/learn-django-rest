@@ -68,7 +68,7 @@ ROOT_URLCONF = 'learn_django_rest.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -154,6 +154,8 @@ REST_FRAMEWORK = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",      # React/Next.js frontend (for example)
     "http://127.0.0.1:3000",
+    "http://localhost:5173", 
+    "http://localhost:4000",   
 ]
 
 # CORS_ALLOW_HEADERS = (
@@ -189,15 +191,15 @@ SIMPLE_JWT = {
 }
 
 '''for development send email'''
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 '''for production send email'''
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.gmail.com'  # Or your SMTP host
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = 'your-email@example.com'
-# EMAIL_HOST_PASSWORD = 'your-email-password-or-app-password'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # Or your SMTP host
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'priyank.suratinfotech@gmail.com'
+EMAIL_HOST_PASSWORD = 'jjzzrmrzzgzeurbc'
 
 
 # STATIC_URL = 'static/'

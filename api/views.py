@@ -313,7 +313,7 @@ class UserProfileView(generics.GenericAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request):
-        serializer = UserProfileSerializer(request.user, data=request.data, partial=True) # partial=True for partial update
+        serializer = UserProfileSerializer(request.user, data=request.data, partial=True) # partial=True allows the serializer to skip validation for missing fields
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
