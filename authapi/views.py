@@ -15,6 +15,7 @@ from datetime import timedelta
 from authapi.models import PasswordResetOTP
 from django.template.loader import render_to_string
 from django.utils.timezone import now
+from rest_framework.permissions import IsAuthenticated
 
 User = get_user_model()
 
@@ -110,18 +111,21 @@ class VerifyOTPAndChangePasswordView(APIView):
         return Response({'message': 'Password reset successful.'}, status=status.HTTP_200_OK)
     
 class ChangePasswordView(APIView):
+    permission_classes = [IsAuthenticated]
     def post(self, request):
         serializer = ChangePasswordViewSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        email = serializer.validated_data['email']
+        
+        old_password = serializer.validated_data['old_password']
         new_password = serializer.validated_data['new_password']
-        
-        try:
-            user = User.objects.get(email=email)
-        except User.DoesNotExist:
-            return Response({'message': 'User with this email does not exist.'}, status=status.HTTP_404_NOT_FOUND)
-        
-        user.set_password(new_password)
-        user.save()
-        
-        return Response({'message': 'Password changed successfully.'}, status=status.HTTP_200_OK)
+
+        user = request.user
+        if user is not None:
+            if not user.check_password(old_password):
+                return Response({'message': 'Old password is incorrect.'}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                user.set_password(new_password)
+                user.save()
+                return Response({'message': 'Password changed successfully.'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'message': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)

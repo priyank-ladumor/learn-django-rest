@@ -38,5 +38,5 @@ class VerifyOTPAndChangePasswordSerializer(serializers.Serializer):
     new_password = serializers.CharField(max_length=128, required=True)
 
 class ChangePasswordViewSerializer(serializers.Serializer):
-    email = serializers.EmailField(required=True)
+    old_password = serializers.CharField(max_length=128, required=True)
     new_password = serializers.CharField(max_length=128, required=True)
